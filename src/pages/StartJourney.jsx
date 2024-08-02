@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import ProgressBar from '../components/ProgressBar';
+import { apiWithoutAuth } from '../auth';
 
 const Form = () => {
   const [step, setStep] = useState(1);
@@ -9,7 +10,12 @@ const Form = () => {
     intakeYear: '',
     name: '',
     email: '',
-    phone: ''
+    phone: '',
+    firstName: '',
+    lastName: '',
+    username: '',
+    password: '',
+    confirmPassword: '',
   });
 
   const handleChange = (e) => {
@@ -20,14 +26,28 @@ const Form = () => {
   const nextStep = () => setStep(step + 1);
   const prevStep = () => setStep(step - 1);
 
+  const stepsImages = {
+    1: 'country-flags',
+    2: 'study-level',
+    3: 'intakes',
+    4: 'scholar',
+    5: 'college-student'
+  };
+  const submitData = () => {
+    console.log('Form submitted', formData);
+    apiWithoutAuth.post("/sign_up").then((response)=>{
+      console.log("responseEee", response.data);
+      nextStep();
+    })
+  }
+
   return (
     <div>
-                <ProgressBar step={step}/>
-
-    <div className='m-auto h-[100vh] flex justify-center items-center'>
-    <div className="max-w-md mx-auto bg-white shadow-lg rounded-md p-16">
+      <ProgressBar step={step}/>
+      <div style={{ backgroundImage: `url(/${stepsImages[step]}.png)`, }} className='bg-no-repeat bg-cover m-auto h-[100vh] flex justify-center items-center'>
+        <div className="opacity-90 max-w-lg mx-auto bg-white shadow-lg rounded-md p-16">
       {step === 1 && (
-        <div>
+            <div>
           <h1 className="text-2xl font-bold mb-4">Choose your dream country</h1>
           <select
             name="country"
@@ -96,6 +116,31 @@ const Form = () => {
           <h1 className="text-2xl font-bold mb-4">Provide personal details</h1>
           <input
             type="text"
+            name="username"
+            placeholder="Username"
+            value={formData.username}
+            onChange={handleChange}
+            className="w-full p-2 mb-4 border border-gray-300 rounded-md"
+          />
+              <div className='grid grid-cols-2 gap-[5px]'>
+                <input
+                  type="text"
+                  name="firstName"
+                  placeholder="First Name"
+                  value={formData.firstName}
+                  onChange={handleChange}
+                  className="w-full p-2 mb-4 border border-gray-300 rounded-md"
+                />
+                <input
+                  type="text"
+                  name="lastName"
+                  placeholder="Last Name"
+                  value={formData.lastName}
+                  onChange={handleChange}
+                  className="w-full p-2 mb-4 border border-gray-300 rounded-md"
+                /></div>
+          <input
+            type="text"
             name="name"
             placeholder="Name"
             value={formData.name}
@@ -118,9 +163,25 @@ const Form = () => {
             onChange={handleChange}
             className="w-full p-2 mb-4 border border-gray-300 rounded-md"
           />
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            value={formData.password}
+            onChange={handleChange}
+            className="w-full p-2 mb-4 border border-gray-300 rounded-md"
+          />
+          <input
+            type="password"
+            name="confirmPassword"
+            placeholder="Confirm Password"
+            value={formData.confirmPassword}
+            onChange={handleChange}
+            className="w-full p-2 mb-4 border border-gray-300 rounded-md"
+          />
           <div className="flex justify-between">
             <button onClick={prevStep} className="px-4 py-2 bg-gray-300 rounded-md">Back</button>
-            <button onClick={nextStep} className="px-4 py-2 bg-blue-500 text-white rounded-md">Submit</button>
+            <button onClick={submitData} className="px-4 py-2 bg-blue-500 text-white rounded-md">Submit</button>
           </div>
         </div>
       )}
