@@ -1,14 +1,20 @@
 import React, { useState } from 'react';
 import ProgressBar from '../components/ProgressBar';
 import { apiWithoutAuth } from '../auth';
+import { AUTH_TOKENS } from '../constants';
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from 'react-redux';
+import { LOGIN } from '../redux/actionTypes/ActionType';
 
 const Form = () => {
   const [step, setStep] = useState(1);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const [formData, setFormData] = useState({
     country: '',
     studyLevel: '',
     intakeYear: '',
-    name: '',
     email: '',
     phone: '',
     firstName: '',
@@ -33,11 +39,44 @@ const Form = () => {
     4: 'scholar',
     5: 'college-student'
   };
+  const getFormData = ()=>{
+    return {
+      country: formData.country,
+      grad_type: formData.studyLevel,
+      intake: formData.intakeYear,
+      first_name: formData.firstName,
+      last_name: formData.lastName,
+      username: formData.username,
+      password: formData.password,
+      email: formData.email,
+      phone_number: formData.phone,
+      verifyPassword: formData.confirmPassword,
+    }
+  }
+  const redirectToHomePage = () => {
+    setTimeout(() => {
+      navigate("/");
+    }, 3000);
+  }
   const submitData = () => {
-    console.log('Form submitted', formData);
-    apiWithoutAuth.post("/sign_up").then((response)=>{
-      console.log("responseEee", response.data);
-      nextStep();
+    const data = getFormData();
+    apiWithoutAuth.post("/sign_up/", data).then((response)=>{
+      const responseData = response.data;
+      console.log("responseData", responseData);
+      if (responseData.success) {
+        localStorage.setItem(AUTH_TOKENS, JSON.stringify(responseData.token));
+        dispatch({
+          type: LOGIN,
+          payload: {
+            authenticated: true,
+            user: responseData.user,
+          },
+        });
+        nextStep();
+        redirectToHomePage();
+      } else {
+        alert(responseData.msg);
+      }
     })
   }
 
@@ -138,15 +177,8 @@ const Form = () => {
                   value={formData.lastName}
                   onChange={handleChange}
                   className="w-full p-2 mb-4 border border-gray-300 rounded-md"
-                /></div>
-          <input
-            type="text"
-            name="name"
-            placeholder="Name"
-            value={formData.name}
-            onChange={handleChange}
-            className="w-full p-2 mb-4 border border-gray-300 rounded-md"
-          />
+                />
+              </div>
           <input
             type="email"
             name="email"
@@ -190,6 +222,7 @@ const Form = () => {
         <div>
           <h1 className="text-2xl font-bold mb-4">Thank you!</h1>
           <p>Your information has been submitted.</p>
+          <p className='mt-5'>Redirecting to home page...</p>
         </div>
       )}
     </div></div>    </div>

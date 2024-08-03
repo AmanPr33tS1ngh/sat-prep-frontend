@@ -32,7 +32,7 @@ const Services = () => {
                 {feature.detail}
               </li>
             ))}</ul> */}
-            <Link to={`/${course.slug}`} className="px-4 py-2 bg-blue-500 text-white rounded">Start Now →</Link>
+            <Link to={`/course/${course.slug}`} className="px-4 py-2 bg-blue-500 text-white rounded">Start Now →</Link>
           </div>
         ))}
       </div>
