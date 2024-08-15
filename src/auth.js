@@ -1,20 +1,21 @@
 import axios from "axios";
 
 const navigateToSignIn = () => {
-    window.location.href = '/sign_in';
+    window.location.href = '/sign-in';
 };
 
-const apiUrl = "http://127.0.0.1:8000"
+const apiUrl = "http://127.0.0.1:8000";
+
 export const api = axios.create({
     baseURL: apiUrl,
 });
+
 export const apiWithoutAuth = axios.create({
     baseURL: apiUrl,
 });
 const excludedUrls = [
-    "/course/", // Example URL to exclude
-    "/api/auth/login", // Another example URL to exclude
-    // Add more URLs as needed
+    "/course/",
+    "/api/auth/login",
 ];
 
 

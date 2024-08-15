@@ -5,10 +5,10 @@ import { Link } from 'react-router-dom';
 const Header = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  const selector = useSelector(
+  const {isAuthenticated, user} = useSelector(
     (state) => state.reducer.reducer,
   );
-  console.log("selector", selector);
+  console.log("selector", isAuthenticated, user);
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -27,12 +27,12 @@ const Header = () => {
         </ul>
       </nav> */}
       <div className="relative">
-        {console.log("selector?.isAuthenticated", selector?.isAuthenticated)}
-        {selector?.isAuthenticated  ? <button
+        {console.log("selector", isAuthenticated, user)}
+        {isAuthenticated  ? <button
           onClick={toggleDropdown}
           className="flex items-center space-x-2 bg-gray-200 p-2 rounded hover:bg-gray-300"
         >
-          <span>Profile</span>
+          <span>{user?.username}</span>
           <svg
             className="w-5 h-5"
             xmlns="http://www.w3.org/2000/svg"
@@ -55,10 +55,10 @@ const Header = () => {
           <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-300 rounded shadow-lg">
             <ul>
               <li>
-                <a href="/profile" className="block px-4 py-2 hover:bg-gray-100">Profile</a>
+                <Link to="/profile" className="block px-4 py-2 hover:bg-gray-100">Profile</Link>
               </li>
               <li>
-                <a href="/logout" className="block px-4 py-2 hover:bg-gray-100">Logout</a>
+                <Link to="/logout" className="block px-4 py-2 hover:bg-gray-100">Logout</Link>
               </li>
             </ul>
           </div>
